@@ -18,8 +18,7 @@ object SMOTE {
 		outPath: String,
 		numFeatures: Int,  
 		oversamplingPctg: Double,
-        numRounds: Int,
-		kNN: Int,
+        kNN: Int,
 		delimiter: String): Unit = {
 
 		val rand = new Random()
@@ -32,8 +31,8 @@ object SMOTE {
 
 		println("Number of Filtered Observations "+numObs.toString)		
 
-		val roundPctg = oversamplingPctg / numRounds.toDouble	
-		val sampleData = dataArray.flatMap(x => x).sample(withReplacement = false, fraction = roundPctg, seed = 1L).collect().sortBy(r => (r._2,r._3)) //without Replacement
+		val roundPctg = oversamplingPctg
+        val sampleData = dataArray.flatMap(x => x).sample(withReplacement = false, fraction = roundPctg, seed = 1L).collect().sortBy(r => (r._2,r._3)) //without Replacement
 
 		println("Sample Data Count "+sampleData.size.toString)
 
@@ -42,23 +41,6 @@ object SMOTE {
         var randomNearestNeighbor = globalNearestNeighbors.map(x => (x._1.split(",")(0).toInt,x._1.split(",")(1).toInt,x._2(rand.nextInt(kNN)))).sortBy(r => (r._1,r._2))
 		
         var sampleDataNearestNeighbors = randomNearestNeighbor.zip(sampleData).map(x => (x._1._3._1._1, x._1._2, x._1._3._1._2, x._2._1))
-
-		var sampleDataNearestNeighbors2 = sampleDataNearestNeighbors
-		
-		for (i<-1 until numRounds) {
-			
-            val sampleData = dataArray.flatMap(x => x).sample(withReplacement = false, fraction = roundPctg, seed = (i+1).toLong).collect().sortBy(r => (r._2,r._3))
-
-			println("Sample Data Count "+sampleData.size.toString)
-
-		 	val globalNearestNeighbors = NearestNeighbors.runNearestNeighbors(dataArray, kNN, sampleData)
-			
-            var randomNearestNeighbor = globalNearestNeighbors.map(x => (x._1.split(",")(0).toInt,x._1.split(",")(1).toInt,x._2(rand.nextInt(kNN)))).sortBy(r => (r._1,r._2))
-			
-            sampleDataNearestNeighbors2 = randomNearestNeighbor.zip(sampleData).map(x => (x._1._3._1._1, x._1._2, x._1._3._1._2, x._2._1))
-			
-            sampleDataNearestNeighbors = sampleDataNearestNeighbors.union(sampleDataNearestNeighbors2)				
-		}
 
 		val syntheticData = dataArray.mapPartitionsWithIndex(createSyntheticData(_,_,sampleDataNearestNeighbors,delimiter)).persist()
 		println("Synthetic Data Count "+syntheticData.count.toString)

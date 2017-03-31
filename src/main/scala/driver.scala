@@ -33,11 +33,10 @@ object driver {
 		val outputDirectory = options.getOrElse("outputDirectory","")
 		val numFeatures = options.getOrElse("numFeatures","0").toInt
 		val oversamplingPctg = options.getOrElse("oversamplingPctg","1.0").toDouble
-		val numRounds = options.getOrElse("numRounds","1").toInt
-		val kNN = options.getOrElse("K","5").toInt
+        val kNN = options.getOrElse("K","5").toInt
 		val delimiter = options.getOrElse("delimiter",",")
 
-		SMOTE.runSMOTE(sc, inputDirectory, outputDirectory, numFeatures, oversamplingPctg, numRounds, kNN, delimiter)	
+		SMOTE.runSMOTE(sc, inputDirectory, outputDirectory, numFeatures, oversamplingPctg, kNN, delimiter)	
 
 		println("The algorithm has finished running")
 		sc.stop()
