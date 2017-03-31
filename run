@@ -1,0 +1,15 @@
+/opt/cloudera/parcels/CDH/bin/spark-submit \
+--class "driver" \
+--master yarn-client \
+--driver-memory 4g \
+--executor-memory 2g \
+--executor-cores 2 \
+--num-executors 2 \
+target/scala-2.10/smote_2.10-1.2.jar \
+--conf spark.yarn.executor.memoryOverhead 1500 \
+--inputDirectory="datasets/small_test.txt" \
+--outputDirectory="datasets/small_test_SMOTE.txt" \
+--numFeatures=50 \
+--K=5 \
+--oversamplingPctg=1.0 \
+--delimiter=" "
