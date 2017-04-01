@@ -10,10 +10,10 @@ sbt package
 
 ## Details
 ### Data format
-* First column corresponds to the datapoint's label ($Y$). The remaining clumns are the features. 
+* Any headers must be removed from the data.
+* First column corresponds to the datapoint's label (Y). The remaining clumns are the features. 
 * Labels have to 0 and 1. 
-* Label 0 corresponds to majority class examples, and Label
-The data is expected to be formatted in the following way: first column corresponds to the label for that datapoint, whereas all remaining columns are the features. The user must also specify the number of features (**numFeatures**). Any headers must be removed from the data. 
+* Label 0 (Y=0) corresponds to majority class examples, and label 1 (Y=1) corresponds to minority class examples.
 
 ### Algorithmic parameters
 Parameters that **MUST** specified in the "run" file:
