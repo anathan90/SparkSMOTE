@@ -8,8 +8,8 @@ import org.apache.spark.broadcast.Broadcast
 
 object loadData {
 
- 	def readDelimitedData(sc: SparkContext, path: String, numFeatures: Int, delimiter: String): RDD[(LabeledPoint,Int,Int)] = {
-		val data = sc.textFile(path).filter{x => x.split(delimiter)(0).toDouble == 1.0}.repartition(20).mapPartitions{x => Iterator(x.toArray)}
+ 	def readDelimitedData(sc: SparkContext, path: String, numFeatures: Int, delimiter: String, numPartitions: Int): RDD[(LabeledPoint,Int,Int)] = {
+		val data = sc.textFile(path).filter{x => x.split(delimiter)(0).toDouble == 1.0}.repartition(numPartitions).mapPartitions{x => Iterator(x.toArray)}
 		val formatData = data.mapPartitionsWithIndex{(partitionId,iter) =>
 			var result = List[(LabeledPoint,Int,Int)]()
 			val dataArray = iter.next

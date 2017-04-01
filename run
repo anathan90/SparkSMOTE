@@ -12,4 +12,5 @@ target/scala-2.10/smote_2.10-1.2.jar \
 --numFeatures=50 \
 --K=5 \
 --oversamplingPctg=1.0 \
---delimiter=" "
+--delimiter=" " \
+--numPartitions=20

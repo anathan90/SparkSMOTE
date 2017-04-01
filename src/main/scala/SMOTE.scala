@@ -19,11 +19,12 @@ object SMOTE {
 		numFeatures: Int,  
 		oversamplingPctg: Double,
         kNN: Int,
-		delimiter: String): Unit = {
+		delimiter: String,
+        numPartitions: Int): Unit = {
 
 		val rand = new Random()
 
-		val data = loadData.readDelimitedData(sc, inPath, numFeatures, delimiter)
+		val data = loadData.readDelimitedData(sc, inPath, numFeatures, delimiter, numPartitions)
 		
 		val dataArray = data.mapPartitions(x => Iterator(x.toArray)).cache()
 

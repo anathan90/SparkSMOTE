@@ -35,8 +35,9 @@ object driver {
 		val oversamplingPctg = options.getOrElse("oversamplingPctg","1.0").toDouble
         val kNN = options.getOrElse("K","5").toInt
 		val delimiter = options.getOrElse("delimiter",",")
+		val numPartitions = options.getOrElse("numPartitions","20").toInt
 
-		SMOTE.runSMOTE(sc, inputDirectory, outputDirectory, numFeatures, oversamplingPctg, kNN, delimiter)	
+		SMOTE.runSMOTE(sc, inputDirectory, outputDirectory, numFeatures, oversamplingPctg, kNN, delimiter, numPartitions)	
 
 		println("The algorithm has finished running")
 		sc.stop()
