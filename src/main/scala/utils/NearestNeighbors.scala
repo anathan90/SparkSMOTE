@@ -14,7 +14,7 @@ object NearestNeighbors {
 
 	def runNearestNeighbors(data: RDD[Array[(LabeledPoint,Int,Int)]], 
 		kNN: Int, 
-		sampleData: Array[(LabeledPoint,Int,Int)]): Array[(String,Array[((Int,Int),Double)])] = {
+		sampleData: Array[(LabeledPoint,Int,Int,Int)]): Array[(String,Array[((Int,Int),Double)])] = {
 		
 		val globalNearestNeighborsByIndex = data.mapPartitionsWithIndex(localNearestNeighbors(_,_,kNN,sampleData)).groupByKey().map(x => (x._1,x._2.toArray.sortBy(r => r._2).take(kNN))).collect()		
 
@@ -25,7 +25,7 @@ object NearestNeighbors {
 	private def localNearestNeighbors(partitionIndex: Long,
 		iter: Iterator[Array[(LabeledPoint,Int,Int)]],
 		kNN: Int,
-		sampleData: Array[(LabeledPoint,Int,Int)]): Iterator[(String,((Int,Int),Double))] = { 
+		sampleData: Array[(LabeledPoint,Int,Int,Int)]): Iterator[(String,((Int,Int),Double))] = {
 			
 			var result = List[(String,((Int,Int),Double))]()
 			val dataArr = iter.next
@@ -37,7 +37,7 @@ object NearestNeighbors {
 			for {
 			    i1 <- 0 to sampleDataSize
 			} 
-			kLocalNeighbors(i1) = distanceIndex(sampleData(i1)._3.toInt, sampleData(i1)._2.toInt, DenseVector.zeros[Double](kNN) + Int.MaxValue.toDouble, DenseVector.zeros[Int](kNN))
+			kLocalNeighbors(i1) = distanceIndex(sampleData(i1)._4.toInt, sampleData(i1)._2.toInt, DenseVector.zeros[Double](kNN) + Int.MaxValue.toDouble, DenseVector.zeros[Int](kNN))
 
 			for (i <- 0 to nLocal) {
 				val currentPoint = dataArr(i)

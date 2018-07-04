@@ -30,10 +30,17 @@ object SMOTE {
 
         val numObs = dataArray.map(x => x.size).reduce(_+_)
 
-		println("Number of Filtered Observations "+numObs.toString)		
+		println("Number of Filtered Observations "+numObs.toString)
 
-		val roundPctg = oversamplingPctg
-        val sampleData = dataArray.flatMap(x => x).sample(withReplacement = false, fraction = roundPctg, seed = 1L).collect().sortBy(r => (r._2,r._3)) //without Replacement
+		val incrementPctg = oversamplingPctg + 1
+		val floorOver = math.floor(incrementPctg).toInt
+		val clonedRDD = (1 to floorOver).map(_ => dataArray).reduce(_ union _)
+		val nToSample = math.round(numObs * incrementPctg).toInt
+		val sampleData = clonedRDD.flatMap(x => x)
+			.takeSample(false, num = nToSample, seed = 1L)
+			.zipWithIndex
+			.map{ case ((lp, pi, ri), di) => (lp, pi, ri, di)}
+			.sortBy(r => (r._2, r._3))
 
 		println("Sample Data Count "+sampleData.size.toString)
 
